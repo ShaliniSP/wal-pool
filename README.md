@@ -1,1 +1,1 @@
-# wal-pool
+# WalPool
