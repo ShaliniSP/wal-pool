@@ -68,20 +68,24 @@ def set_cab_details(order):
 def update_cab_location():
     print("Update")
     cabs = cab_details.find({'carrying_order':True})
+    
     for cab in cabs:
+        print("cab")
         if(cab['current'] not in cab['route']):
-            cab['current'] = cab['route'][0]
+            print("Starting")
+            cab_details.update_one({'_id':cab['_id']}, {'$set':{'current':cab['route'][0]}})
         else: 
-            index = cabs[cab['current']]
-            if index == len(cab['route']) -1 :
+            print("Exists")
+            print(list(cab['route']))
+            ind = cab['route'].index(cab['current'])
+            print(ind)
+            if ind == len(cab['route']) -1 :
                 #Trip over
                 cab_details.update_one({'_id':cab['_id']}, {'$set':{'order_id':0, 'carrying_order':False}})
             else:
-                cab_details.update_one({'_id':cab['_id']}, {'$set':{'current':cab['route'][index+1]}})
-from apscheduler.schedulers.background import BackgroundScheduler
-scheduler = BackgroundScheduler()
-scheduler.add_job(update_cab_location, 'interval', seconds=2)
-scheduler.start()
+                print("trip not over")
+                cab_details.update_one({'_id':cab['_id']}, {'$set':{'current':cab['route'][ind+1]}})
+
 
 now = datetime.datetime.now()
 print(now)
@@ -128,5 +132,9 @@ cab_db = client.Cab
 order_collection = order_db.OrderCollection
 cab_details = cab_db.CabDetails
 
+from apscheduler.schedulers.background import BackgroundScheduler
+scheduler = BackgroundScheduler()
+scheduler.add_job(update_cab_location, 'interval', seconds=10)
+scheduler.start()
 
 app.run(host='localhost',port=8000)
