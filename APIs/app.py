@@ -58,16 +58,30 @@ def set_cab_details(order):
     current_locs = []
     for cab in cabs:
         current_locs.append(cab['current'])
+        #print(cab)
     loc = find_shortest_distance(order['pickup'], current_locs)
     allocated_cab = cab_details.find_one({'current':loc})
     cab_details.update_one({'_id':allocated_cab['_id']}, {'$set':{'order_id':order['_id'], 'carrying_order':True}})
     order_collection.update_one({'_id':order['_id']},{'$set':{'cab_allocated':True}})
     
     
-
-#from apscheduler.schedulers.background import BackgroundScheduler
-#scheduler = BackgroundScheduler()
-#job = scheduler.add_job(update_cab_location, 'interval', seconds=2)
+def update_cab_location():
+    print("Update")
+    cabs = cab_details.find({'carrying_order':True})
+    for cab in cabs:
+        if(cab['current'] not in cab['route']):
+            cab['current'] = cab['route'][0]
+        else: 
+            index = cabs[cab['current']]
+            if index == len(cab['route']) -1 :
+                #Trip over
+                cab_details.update_one({'_id':cab['_id']}, {'$set':{'order_id':0, 'carrying_order':False}})
+            else:
+                cab_details.update_one({'_id':cab['_id']}, {'$set':{'current':cab['route'][index+1]}})
+from apscheduler.schedulers.background import BackgroundScheduler
+scheduler = BackgroundScheduler()
+scheduler.add_job(update_cab_location, 'interval', seconds=2)
+scheduler.start()
 
 now = datetime.datetime.now()
 print(now)
@@ -79,10 +93,10 @@ apikey = 'AIzaSyCewtBSHxzc3KFmOjv4c3rilD88HEKEy08'
 @app.route('/v1/order/next',methods=['GET'])
 def get_next_order():
     # Loop through order collection, find 
-    order = order_collection.find_one({'cab_allocated':True})
-    #if(not order):
-    #    print("No orders pending !!!")
-    #    return 200
+    order = order_collection.find_one({'cab_allocated':False})
+    if(not order):
+        print("No orders pending !!!")
+        return ("Success", 200)
     
     print("Prices call")
     pprint.pprint(order)
@@ -101,7 +115,8 @@ def get_next_order():
     print(latlng)
     
     cab_details.update({'order_id':order['_id']},{'$set':{'route':latlng}})
-    return order,200
+    
+    return ("success",200)
 
 
 cors = CORS(app, resources={r"/api/*": {"origins":"*"}})
