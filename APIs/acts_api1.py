@@ -8,15 +8,6 @@ from math import sqrt
 from datetime import timedelta
 now = datetime.datetime.now()
 print(now)
-#client = pymongo.MongoClient(
-#        "mongodb+srv://WalPoolAdmin:walpool@walpool-wd6fo.mongodb.net/test?retryWrites=true&w=majority"
-#        )
-#db = client.Order
-#collection = db.OrderCollection
-#
-#pprint.pprint(collection.find())
-
-
 
 # AIzaSyBSKVzzxyz8KxaEKw4btOCIgOIOaGOZmhU
 # https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=Washington,DC&destinations=New+York+City,NY&key=AIzaSyBSKVzzxyz8KxaEKw4btOCIgOIOaGOZmhU
