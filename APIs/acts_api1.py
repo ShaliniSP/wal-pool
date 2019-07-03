@@ -1,10 +1,10 @@
 #!flask/bin/python
 import pymongo
-from flask_cors import CORS
+#from flask_cors import CORS
 import datetime
 import requests
 import pprint
-import datetime
+from math import sqrt
 from datetime import timedelta
 now = datetime.datetime.now()
 print(now)
@@ -67,8 +67,6 @@ def get_price_estimates(start, end):
 
 
 
-order = order_collection.find_one({'cab_allocated':False})
-pprint.pprint(order)
 
 
 prices = get_price_estimates(order['pickup'], order['drop'])
@@ -76,16 +74,42 @@ print(prices)
 
 order_collection.update({'_id':order['_id']}, {'$set':{'price':prices}})
 
-
-
-@app.route('/v1/cab/request',methods=['GET'])
-def get_cab_details():
- 
-    pprint.pprint(collection.find())
+def find_shortest_distance(pickup, current_locations):
+    s = ""
+    for curr in current_locations:
+        s = s + str(curr[0]).strip('\n') + ',' + str(curr[1]).strip('\n') + '|'
+    s = s.strip('|')
+    url =  'https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=' + str(pickup[0])  + ',' + str(pickup[1]) + '&destinations=' + s + '&key=AIzaSyCewtBSHxzc3KFmOjv4c3rilD88HEKEy08'
+    resp = requests.get(url)
+    elements = resp.json()['rows'][0]['elements']
+    min = elements[0]['distance']['value']
+    pos = 0
+    for i in range(len(elements)):
+        if(elements[i]['distance']['value'] < min):
+            min = elements[i]['distance']['value']
+            pos = i
     
+    print(min)
+    return current_locations[pos]
 
 
-@app.route('/v1/order/next',methods=['GET'])
+#@app.route('/v1/cab/request',methods=['GET'])
+def get_cab_details(order):
+    #Loop through cab details and find the cab with the smallest distance
+    cabs  = cab_details.find()
+    current_locs = []
+    for cab in cabs:
+        current_locs.append(cab['current'])
+    #print(current_locs)
+    loc = find_shortest_distance(order['pickup'], current_locs)
+    allocated_cab = cab_details.find_one({'current':loc})
+    cab_details.update_one({'_id':allocated_cab['_id']}, {'$set':{'order_id':order['_id']}})
+
+order = order_collection.find_one({'cab_allocated':False})
+#pprint.pprint(order)
+get_cab_details(order)
+
+#@app.route('/v1/order/next',methods=['GET'])
 def get_next_order():
     # Loop through order collection, find 
     order = order_collection.find_one({'cab_allocated':False})
