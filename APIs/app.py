@@ -83,11 +83,14 @@ def set_cab_details(order):
 def get_next_order():
     # Loop through order collection, find 
     order = order_collection.find_one({'cab_allocated':False})
-    pprint(order)
+    print ("Hello")
+    print(order)
     prices = get_price_estimates(order['pickup'], order['drop'])
     order_collection.update({'_id':order['_id']}, {'$set':{'price':prices}})
+    print ("Hello2")
     print(prices)
     set_cab_details(order)
+    return ("Success",200)
 
 
-app.run(debug=True,host='0.0.0.0',port=80)
+app.run(debug=True,host='localhost',port=8000)
