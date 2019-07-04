@@ -126,6 +126,11 @@
 		var url =  "http://localhost:8000/v1/order/next/" + OrderID;
 		xhr1.open('GET', url, true);
 		xhr1.send();
+		var delayinMilliseconds = 2500;
+		setTimeout(function() {
+			window.location.reload(true);
+		}, delayinMilliseconds);
+
 	}
 	console.log("http://localhost:8000/v1/order/details");
   </script>
