@@ -111,7 +111,7 @@ def get_next_order():
     print("Prices call")
     pprint.pprint(order)
     prices = get_price_estimates(order['pickup'], order['drop'])
-    order_collection.update({'_id':order['_id']}, {'$set':{'price':prices}})
+    order_collection.update_one({'_id':order['_id']}, {'$set':{'price':prices}})
     print(prices)
     set_cab_details(order)
     
@@ -124,7 +124,7 @@ def get_next_order():
     latlng = polyline.decode(ps)
     print(latlng)
     
-    cab_details.update({'order_id':order['_id']},{'$set':{'route':latlng}})
+    cab_details.update_one({'order_id':order['_id']},{'$set':{'route':latlng}})
     
     return ("success",200)
 
