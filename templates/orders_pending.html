@@ -96,7 +96,7 @@
 					<th>Action</th>\
 		</tr>'
 		// Have to
-		alert(response)
+		//alert(response)
 		// Have to add eta and price
 		r = response['det']
 		for(i=0;i<r.length;i++){
@@ -104,7 +104,7 @@
 		st = st+'<tr><td>'+r[i]['_id']+'</td><td>'+r[i]['pickup']+'</td><td>'+r[i]['drop']+'</td>\
 					<td>\
 						<div style=\"text-align: center;\">\
-							<p class="lead" ><button class="btn btn-primary btn-lg btn-firstpage" onclick= href="#" role="button" id="produce-button" value="Allocate" style="margin-top: 10px; background: transparent; border: 2px solid; border-radius: 3px; color: black;">Allocate</button></p>\
+							<p class="lead" ><button class="btn btn-primary btn-lg btn-firstpage" onclick= "alloc(this)" role="button" id="produce-button" value="Allocate" style="margin-top: 10px; background: transparent; border: 2px solid; border-radius: 3px; color: black;">Allocate</button></p>\
 						</div>\
 					</td>\
 				</tr>'
@@ -120,8 +120,12 @@
 
 	}
 
-	function track(start, end, current){
-
+	function alloc(k){
+		var OrderID = (k.parentElement.parentElement.parentElement.parentElement.childNodes[0].textContent);
+		var xhr1 = new XMLHttpRequest();
+		var url =  "http://localhost:8000/v1/order/next/" + OrderID;
+		xhr1.open('GET', url, true);
+		xhr1.send();
 	}
 	console.log("http://localhost:8000/v1/order/details");
   </script>

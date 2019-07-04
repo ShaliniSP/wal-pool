@@ -1,5 +1,6 @@
 #!flask/cabbin/python
 import pymongo
+from bson.objectid import ObjectId
 from flask import Flask, jsonify
 from flask_cors import CORS
 import datetime
@@ -100,13 +101,17 @@ print(now)
 # https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=Washington,DC&destinations=New+York+City,NY&key=AIzaSyBSKVzzxyz8KxaEKw4btOCIgOIOaGOZmhU
 apikey = 'AIzaSyCewtBSHxzc3KFmOjv4c3rilD88HEKEy08'
 
-@app.route('/v1/order/next',methods=['GET'])
-def get_next_order():
+@app.route('/v1/order/next/<order_id>',methods=['GET'])
+def get_next_order(order_id):
     # Loop through order collection, find 
-    order = order_collection.find_one({'cab_allocated':False})
+    print(order_id)
+    order = order_collection.find_one({'_id':ObjectId(order_id)})
     if(not order):
         print("No orders pending !!!")
-        return ("Success", 200)
+        response = jsonify({"success":200})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        print(response)
+        return response, 200
     
     print("Prices call")
     pprint.pprint(order)
@@ -125,8 +130,10 @@ def get_next_order():
     print(latlng)
     
     cab_details.update_one({'order_id':order['_id']},{'$set':{'route':latlng}})
-    
-    return ("success",200)
+    response = jsonify({"success":200})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    print(response)
+    return response, 200
 
 
 @app.route('/v1/<db>/details', methods=['GET'])
