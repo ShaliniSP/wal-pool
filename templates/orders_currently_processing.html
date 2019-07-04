@@ -40,10 +40,6 @@
 		  <h1 class="display-4" style="color: black; font-size: 57px; font-color:black">Orders Currently Processing.</h1>
 		  <hr class="my-4" style="width: 60%;font-color: black;">
 	</div>
-
-
- 	<div id='table'>
-  </div>
  </body>
 <script>
 	var xhr = new XMLHttpRequest();
@@ -56,30 +52,44 @@
 	        var response = JSON.parse(xhr.responseText);
 	        console.log(response);
 	    
-	    t = document.getElementById('table');
-	    t.innerHTML = '<table border="1">\
-        <tr>\
+	    var t = document.createElement("div");
+	    t.id="table";
+	    console.log(t.innerHTML);
+
+	   st = '<table border=1> <tr>\
 					<th>Order ID</th>\
-					<th>Cab ID</th>\
+					<th>Cab No.</th>\
 					<th>Track</th>\
 		</tr>'
-
 		// Have to add eta and price
 		r = response['det']
 		for(i=0;i<r.length;i++){
-			if(r[i]['carrying_order']==false){
-		t.innerHTML = t.innerHTML+'<tr><td>'+r[i]['order_id']+'</td><td>'+r[i]['cab_no']+'</td>\
+			if(r[i]['carrying_order']==true){
+		st = st+'<tr><td>'+r[i]['order_id']+'</td><td>'+r[i]['cab_no']+'</td>\
 					<td>\
 						<div style=\"text-align: center;\">\
-							<p class="lead" ><input type="submit" class="btn btn-primary btn-lg btn-firstpage" href="#" role="button" id="produce-button" value="Track" style="margin-top: 10px; background: transparent; border: 2px solid; border-radius: 3px; color: black;"></input></p>\
+							<p class="lead" ><button class="btn btn-primary btn-lg btn-firstpage" onclick= href="#" role="button" id="produce-button" value="Track" style="margin-top: 10px; background: transparent; border: 2px solid; border-radius: 3px; color: black;">Track</button></p>\
 						</div>\
 					</td>\
 				</tr>'
 			}
 		}
-		t.innerHTML  = t.innerHTML + '</table>';
+		st = st+'</table>';
+		console.log(st);
+		t.innerHTML = st;
+		console.log(t)
+		document.body.appendChild(t);
 	}
+
+
 	}
+
+	function track(start, end, current){
+
+	}
+
+
+
 	console.log("http://localhost:8000/v1/cab/details");
   </script>
  </html>
