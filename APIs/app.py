@@ -134,15 +134,17 @@ def get_details(db):
     details = {'det':[]}
     if(db=="order"):
         resp = order_collection.find()
-        d = {}
         for i in resp:
+            d = {}
             for j in i.keys():
                 if(j=="order_id" or j=="_id"):
                     d[j] = str(i[j])
                 else:
                     d[j] = i[j]
-            print(d)
+            
             details['det'].append(d)
+            print("HELLO",  d)
+        print ("HI" , details['det'])
         response = jsonify(details)   
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response, 200

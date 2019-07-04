@@ -41,8 +41,8 @@
 			  <hr class="my-4" style="width: 60%;font-color: black;">
 		</div>
 
-		<div id='table'>
-	      	<!-- <table border="1">
+		<!--<div id='table'>
+	      	 <table border="1">
 	        		<tr>
 						<th>Order ID</th>
 						<th>Pickup Location</th>
@@ -69,8 +69,8 @@
 					</tr>
 
 	        
-	      </table> -->
-	  </div>
+	      </table> 
+	  </div>-->
 
 
 	</body>
@@ -85,30 +85,43 @@
 	        var response = JSON.parse(xhr.responseText);
 	        console.log(response);
 	    
-	    t = document.getElementById('table');
-	    t.innerHTML = '<table border="1">\
-        <tr>\
+	    var t = document.createElement("div");
+	    t.id="table";
+	    console.log(t.innerHTML);
+
+	   st = '<table border=1> <tr>\
 					<th>Order ID</th>\
 					<th>Pickup</th>\
 					<th>Drop</th>\
-					<th>Allocate</th>\
+					<th>Action</th>\
 		</tr>'
-
+		// Have to
+		alert(response)
 		// Have to add eta and price
 		r = response['det']
 		for(i=0;i<r.length;i++){
 			if(r[i]['cab_allocated']==false){
-		t.innerHTML = t.innerHTML+'<tr><td>'+r[i]['_id']+'</td><td>'+r[i]['pickup']+'</td><td>'+r[i]['drop']+'</td>\
+		st = st+'<tr><td>'+r[i]['_id']+'</td><td>'+r[i]['pickup']+'</td><td>'+r[i]['drop']+'</td>\
 					<td>\
 						<div style=\"text-align: center;\">\
-							<p class="lead" ><input type="submit" class="btn btn-primary btn-lg btn-firstpage" href="#" role="button" id="produce-button" value="Allocate" style="margin-top: 10px; background: transparent; border: 2px solid; border-radius: 3px; color: black;"></input></p>\
+							<p class="lead" ><button class="btn btn-primary btn-lg btn-firstpage" onclick= href="#" role="button" id="produce-button" value="Allocate" style="margin-top: 10px; background: transparent; border: 2px solid; border-radius: 3px; color: black;">Allocate</button></p>\
 						</div>\
 					</td>\
 				</tr>'
 			}
 		}
-		t.innerHTML  = t.innerHTML + '</table>';
+		st = st+'</table>';
+		console.log(st);
+		t.innerHTML = st;
+		console.log(t)
+		document.body.appendChild(t);
 	}
+
+
+	}
+
+	function track(start, end, current){
+
 	}
 	console.log("http://localhost:8000/v1/order/details");
   </script>
