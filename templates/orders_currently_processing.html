@@ -43,14 +43,22 @@
  </body>
 <script>
 	var xhr = new XMLHttpRequest();
+	var cab_det;
+	var order_det;
 	xhr.open('GET', "http://localhost:8000/v1/cab/details", true);
 	xhr.send();
-	 
+
+	var xhr1 = new XMLHttpRequest();
+	xhr1.open('GET',"http://localhost:8000/v1/order/details", true)
+	xhr1.send();
+	xhr1.onreadystatechange = processRequest1;
+
+
 	xhr.onreadystatechange = processRequest;
 	function processRequest(e) {
 	    if (xhr.readyState == 4 && xhr.status == 200) {
-	        var response = JSON.parse(xhr.responseText);
-	        console.log(response);
+	        cab_det = JSON.parse(xhr.responseText);
+	        console.log(cab_det);
 	    
 	    var t = document.createElement("div");
 	    t.id="table";
@@ -62,13 +70,13 @@
 					<th>Track</th>\
 		</tr>'
 		// Have to add eta and price
-		r = response['det']
+		r = cab_det['det']
 		for(i=0;i<r.length;i++){
 			if(r[i]['carrying_order']==true){
 		st = st+'<tr><td>'+r[i]['order_id']+'</td><td>'+r[i]['cab_no']+'</td>\
 					<td>\
 						<div style=\"text-align: center;\">\
-							<p class="lead" ><button class="btn btn-primary btn-lg btn-firstpage" onclick= href="#" role="button" id="produce-button" value="Track" style="margin-top: 10px; background: transparent; border: 2px solid; border-radius: 3px; color: black;">Track</button></p>\
+							<p class="lead" ><button class="btn btn-primary btn-lg btn-firstpage" onclick="track(this)" role="button" id="produce-button" value="Track" style="margin-top: 10px; background: transparent; border: 2px solid; border-radius: 3px; color: black;">Track</button></p>\
 						</div>\
 					</td>\
 				</tr>'
@@ -84,8 +92,17 @@
 
 	}
 
-	function track(start, end, current){
 
+	function processRequest1(e){
+	    if (xhr1.readyState == 4 && xhr1.status == 200) {
+	        order_det = JSON.parse(xhr1.responseText);
+	        console.log(order_det);
+	    }
+	}
+
+	function track(k){
+		var order_id = k.parentElement.parentElement.parentElement.parentElement.childNodes[0].textContent;
+		console.log(order_id);
 	}
 
 
