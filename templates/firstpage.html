@@ -13,6 +13,18 @@
 			display:inline-block;
 			}
 		</style>
+
+		<script type="text/javascript" language="JavaScript">
+                  function clickedButton1()
+	            	{
+	               	 window.location = 'orders_currently_processing.html'
+	            	}
+
+	            	function clickedButton2()
+	            	{
+	               	 window.location = 'orders_pending.html'
+	            	}
+        </script>
 	</head>
 
 	<body>
@@ -31,8 +43,8 @@
 			  <p class="lead" style="color: black; font-size: 24px" >Whatever it takes to deliver your order.</p>
 			  <hr class="my-4" style="width: 60%;color: black;  " >
 			  <div class="btn-group btn-group-justified">
-			  	<p class="lead"><a class="btn btn-primary btn-lg btn-firstpage" href="#" role="button" id="user-button1" style="margin-right: 40px; width: 200px; border: 2px solid #3333ff">Orders Processing.</a></p>
-			  	<p class="lead"><a class="btn btn-primary btn-lg btn-firstpage" href="#" role="button" id="user-button2" style="width: 200px; border: 2px solid #3333ff">Pending Orders.</a></p>
+			  	<p class="lead"><a class="btn btn-primary btn-lg btn-firstpage" href="#" role="button" id="user-button1" onClick = "clickedButton1()" style="margin-right: 40px; width: 200px; border: 2px solid #3333ff">Orders Processing.</a></p>
+			  	<p class="lead"><a class="btn btn-primary btn-lg btn-firstpage" href="#" role="button" id="user-button2" onClick = "clickedButton2()" style="width: 200px; border: 2px solid #3333ff">Pending Orders.</a></p>
 			  </div>
 			</div>
 		</div>
