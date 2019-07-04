@@ -1,6 +1,6 @@
 #!flask/cabbin/python
 import pymongo
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 import datetime
 import requests
@@ -9,6 +9,12 @@ from datetime import timedelta
 import polyline
 
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy   dog'
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+cors = CORS(app, resources={r"/foo": {"origins": "http://localhost:8000"}})
+
 def get_price_estimates(start, end):
     print(start, end)
     start_latitude = start[0]
@@ -123,7 +129,45 @@ def get_next_order():
     return ("success",200)
 
 
-cors = CORS(app, resources={r"/api/*": {"origins":"*"}})
+@app.route('/v1/<db>/details', methods=['GET'])
+def get_details(db):
+    details = {'det':[]}
+    if(db=="order"):
+        resp = order_collection.find()
+        d = {}
+        for i in resp:
+            for j in i.keys():
+                if(j=="order_id" or j=="_id"):
+                    d[j] = str(i[j])
+                else:
+                    d[j] = i[j]
+            print(d)
+            details['det'].append(d)
+        response = jsonify(details)   
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response, 200
+    
+    elif(db=="cab"):
+        resp = cab_details.find()
+        for i in resp:
+            d={}
+            for j in i.keys():
+                if(j=="order_id" or j=="_id"):
+                    d[j] = str(i[j])
+                else:
+                    d[j] = i[j]
+            print(d)
+            details['det'].append(d)
+        response = jsonify(details)   
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response, 200
+    
+    else:
+        return 405
+    
+
+
+
 client = pymongo.MongoClient(
             "mongodb+srv://WalPoolAdmin:walpool@walpool-wd6fo.mongodb.net/test?retryWrites=true&w=majority"
             )

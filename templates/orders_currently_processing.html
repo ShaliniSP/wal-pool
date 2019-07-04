@@ -43,37 +43,43 @@
 
 
  	<div id='table'>
-      <table border="1">
-        <tr>
-					<th>Order ID</th>
-					<th>Cab ID</th>
-					<th>Price</th>
-					<th>ETA</th>
-					<th>Track</th>
-				</tr>
-
-				<tr>
-					<td>C002</td>
-					<td>UB12</td>
-					<td>200</td>
-					<td>50 min</td>
-					<td><div style="text-align: center;">
-			<p class="lead" ><input type="submit" class="btn btn-primary btn-lg btn-firstpage" href="#" role="button" id="produce-button" value="Track" style="margin-top: 10px; background: transparent; border: 2px solid; border-radius: 3px; color: black;"></input></p>
-		</div></td>
-				</tr>
-
-				<tr>
-					<td>C001</td>
-					<td>UB13</td>
-					<td>500</td>
-					<td>20 min</td>
-					<td><div style="text-align: center;">
-			<p class="lead" ><input type="submit" class="btn btn-primary btn-lg btn-firstpage" href="#" role="button" id="produce-button" value="Track" style="margin-top: 10px; background: transparent; border: 2px solid; border-radius: 3px; color: black;"></input></p>
-		</div></td>
-				</tr>
-
-        
-      </table>
   </div>
  </body>
+<script>
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', "http://localhost:8000/v1/cab/details", true);
+	xhr.send();
+	 
+	xhr.onreadystatechange = processRequest;
+	function processRequest(e) {
+	    if (xhr.readyState == 4 && xhr.status == 200) {
+	        var response = JSON.parse(xhr.responseText);
+	        console.log(response);
+	    
+	    t = document.getElementById('table');
+	    t.innerHTML = '<table border="1">\
+        <tr>\
+					<th>Order ID</th>\
+					<th>Cab ID</th>\
+					<th>Track</th>\
+		</tr>'
+
+		// Have to add eta and price
+		r = response['det']
+		for(i=0;i<r.length;i++){
+			if(r[i]['carrying_order']==false){
+		t.innerHTML = t.innerHTML+'<tr><td>'+r[i]['order_id']+'</td><td>'+r[i]['cab_no']+'</td>\
+					<td>\
+						<div style=\"text-align: center;\">\
+							<p class="lead" ><input type="submit" class="btn btn-primary btn-lg btn-firstpage" href="#" role="button" id="produce-button" value="Track" style="margin-top: 10px; background: transparent; border: 2px solid; border-radius: 3px; color: black;"></input></p>\
+						</div>\
+					</td>\
+				</tr>'
+			}
+		}
+		t.innerHTML  = t.innerHTML + '</table>';
+	}
+	}
+	console.log("http://localhost:8000/v1/cab/details");
+  </script>
  </html>
